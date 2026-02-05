@@ -91,6 +91,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
+#added flags
 CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -march=rv64g_zicsr_zifencei -mabi=lp64d -Wno-infinite-recursion
 
 ifdef LAB
@@ -121,7 +122,7 @@ endif
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
 CFLAGS += -fno-pie -nopie
 endif
-
+# added elf64 flag
  LDFLAGS = -m elf64lriscv -z max-page-size=4096
 
 $K/kernel: $(OBJS) $(OBJS_KCSAN) $K/kernel.ld $U/initcode
@@ -134,6 +135,7 @@ $(OBJS): EXTRAFLAG := $(KCSANFLAG)
 $K/%.o: $K/%.c
 	$(CC) $(CFLAGS) $(EXTRAFLAG) -c -o $@ $
 	
+#added	
 $K/%.o: $K/%.S
 	$(CC) $(CFLAGS) -c -o $@ $<
 
