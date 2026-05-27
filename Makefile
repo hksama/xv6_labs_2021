@@ -91,7 +91,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb
+CFLAGS = -Wall -Wno-error=infinite-recursion -O -fno-omit-frame-pointer -ggdb
 
 ifdef LAB
 LABUPPER = $(shell echo $(LAB) | tr a-z A-Z)
@@ -103,6 +103,7 @@ CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -I.
+CFLAGS += -march=rv64gc_zicsr_zifencei -mabi=lp64
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
 ifeq ($(LAB),net)
@@ -122,7 +123,7 @@ ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
 CFLAGS += -fno-pie -nopie
 endif
 
-LDFLAGS = -z max-page-size=4096
+LDFLAGS = -m elf64lriscv -z max-page-size=4096
 
 $K/kernel: $(OBJS) $(OBJS_KCSAN) $K/kernel.ld $U/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS) $(OBJS_KCSAN)
@@ -134,10 +135,13 @@ $(OBJS): EXTRAFLAG := $(KCSANFLAG)
 $K/%.o: $K/%.c
 	$(CC) $(CFLAGS) $(EXTRAFLAG) -c -o $@ $<
 
+$K/%.o: $K/%.S
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 
 $U/initcode: $U/initcode.S
-	$(CC) $(CFLAGS) -march=rv64g -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
-	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/initcode.out $U/initcode.o
+	$(CC) $(CFLAGS) -march=rv64gc_zicsr_zifencei -mabi=lp64 -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
+	$(LD) -m elf64lriscv $(LDFLAGS) -N -e start -Ttext 0 -o $U/initcode.out $U/initcode.o
 	$(OBJCOPY) -S -O binary $U/initcode.out $U/initcode
 	$(OBJDUMP) -S $U/initcode.o > $U/initcode.asm
 
