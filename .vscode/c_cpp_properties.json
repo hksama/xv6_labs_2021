@@ -1,0 +1,27 @@
+{
+  "configurations": [
+    {
+      "name": "xv6-riscv",
+      "includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/kernel",
+        "${workspaceFolder}/user"
+      ],
+      "defines": [
+        "__KERNEL__"
+      ],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c11",
+      "intelliSenseMode": "macos-clang-x64",
+      "browse": {
+        "path": [
+          "${workspaceFolder}",
+          "${workspaceFolder}/kernel",
+          "${workspaceFolder}/user"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      }
+    }
+  ],
+  "version": 4
+}

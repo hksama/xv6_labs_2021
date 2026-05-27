@@ -1,0 +1,13 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "C_Cpp.workspaceParsingPriority": "low",
+  "C_Cpp.intelliSenseCacheSize": 512,
+  "C_Cpp.autocomplete": "default",
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.loggingLevel": "Warning",
+  "files.associations": {
+    "*.c": "c",
+    "*.h": "c"
+  },
+  "editor.formatOnSave": false
+}
