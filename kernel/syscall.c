@@ -11,9 +11,16 @@
 int
 fetchaddr(uint64 addr, uint64 *ip)
 {
+  //gets info abt current process.
   struct proc *p = myproc();
+  // addr>=p->sz checks if passed virtual address is more than the size of process memory. 
+  //addr+sizeof(uint64)>p->sz checks if the passed virtual address is within the process memory and does not overflow.
+
   if(addr >= p->sz || addr+sizeof(uint64) > p->sz)
     return -1;
+  
+  // copies data from user space to kernel space. It uses the process's 
+  // page table to translate the virtual address to a physical address and then copies the data from that physical address to the kernel space variable ip. If the copy fails, it returns -1.
   if(copyin(p->pagetable, (char *)ip, addr, sizeof(*ip)) != 0)
     return -1;
   return 0;
